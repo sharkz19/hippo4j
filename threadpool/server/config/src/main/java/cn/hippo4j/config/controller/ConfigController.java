@@ -18,6 +18,7 @@
 package cn.hippo4j.config.controller;
 
 import java.net.URLDecoder;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,8 +26,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import cn.hippo4j.common.constant.ConfigModifyTypeConstants;
 import cn.hippo4j.common.constant.Constants;
+import cn.hippo4j.common.model.InstanceInfo;
 import cn.hippo4j.common.model.register.DynamicThreadPoolRegisterWrapper;
 import cn.hippo4j.common.toolkit.BeanUtil;
+import cn.hippo4j.common.toolkit.CollectionUtil;
 import cn.hippo4j.common.toolkit.StringUtil;
 import cn.hippo4j.common.toolkit.UserContext;
 import cn.hippo4j.common.model.Result;
@@ -38,6 +41,8 @@ import cn.hippo4j.config.service.ConfigServletInner;
 import cn.hippo4j.config.service.biz.ConfigService;
 import cn.hippo4j.config.toolkit.Md5ConfigUtil;
 import cn.hippo4j.config.verify.ConfigModificationVerifyServiceChoose;
+import cn.hippo4j.discovery.core.BaseInstanceRegistry;
+import cn.hippo4j.discovery.core.Lease;
 import cn.hippo4j.server.common.base.Results;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -64,6 +69,9 @@ public class ConfigController {
 
     private final ConfigModificationVerifyServiceChoose configModificationVerifyServiceChoose;
 
+    // 我的修改
+    private final BaseInstanceRegistry baseInstanceRegistry;
+
     @GetMapping
     public Result<ConfigInfoBase> detailConfigInfo(@RequestParam("tpId") String tpId,
                                                    @RequestParam("itemId") String itemId,
@@ -77,7 +85,12 @@ public class ConfigController {
     public Result<Boolean> publishConfig(@RequestParam(value = "identify", required = false) String identify,
                                          @RequestBody ConfigAllInfo config) {
         if (UserContext.getUserRole().equals("ROLE_ADMIN")) {
+            // 我的修改
             configService.insertOrUpdate(identify, true, config);
+            //List<Lease<InstanceInfo>> leases = baseInstanceRegistry.listInstance(config.getItemId());
+            //Lease<InstanceInfo> first = CollectionUtil.getFirst(leases);
+            //InstanceInfo holder = first.getHolder();
+            //configService.insertOrUpdate(identify, "SERVER".equals(holder.getNotificationSender()), config);
         } else {
             ConfigModifySaveReqDTO modifySaveReqDTO = BeanUtil.convert(config, ConfigModifySaveReqDTO.class);
             modifySaveReqDTO.setCorePoolSize(config.getCoreSize());

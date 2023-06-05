@@ -32,6 +32,9 @@ import lombok.extern.slf4j.Slf4j;
 @Accessors(chain = true)
 public class InstanceInfo {
 
+    // 我的修改
+    private String notificationSender;
+
     private static final String UNKNOWN = "unknown";
 
     private String appName = UNKNOWN;

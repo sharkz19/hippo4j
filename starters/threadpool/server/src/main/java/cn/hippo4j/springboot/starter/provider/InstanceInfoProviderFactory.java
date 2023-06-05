@@ -78,6 +78,8 @@ public final class InstanceInfoProviderFactory {
         String identify = IdentifyUtil.generate(environment, inetUtils);
         instanceInfo.setIdentify(identify);
         instanceInfo.setActive(active.toUpperCase());
+        // 我的修改
+        instanceInfo.setNotificationSender(environment.getProperty("spring.dynamic.thread-pool.notification-sender", "CLIENT"));
         return instanceInfo;
     }
 }

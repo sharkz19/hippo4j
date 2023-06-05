@@ -31,7 +31,7 @@ import lombok.SneakyThrows;
  */
 public class MessageConvert {
 
-    private MessageConvert(){
+    private MessageConvert() {
 
     }
 
